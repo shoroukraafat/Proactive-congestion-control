@@ -1,7 +1,11 @@
-# Proactive-congestion-control
 # Mobility Load Management 
-We consider the problem of optimization of mobile networks. We aim to enhance the network throughput, minimize energy consumption, and improve network coverage. The problem is cast as a reinforcement learning (RL) problem. The reward function accounts for the joint optimization of throughput, energy consumption, and coverage; our formulation allows the network operator to assign weights to each of these cost functions based on the operator’s preferences. Moreover, the state is defined by key performance indicators (KPIs) that are readily available on the network operator side. Finally, the action space for the RL agent comprises a hybrid action space, where we have two continuous action elements, namely, cell individual offsets (CIOs) and transmission powers, and one discrete action element, which is switching MIMO ON and OFF.
-Ref. repo: https://github.com/Ghada-sy/Load-Management
+We consider the problem of mobility load management (balancing) in cellular LTE networks. In this page we provide the source codes for the following papers:
+
+1- "Mobility Load Management in Cellular Networks: A Deep Reinforcement Learning Approach":
+We propose a comprehensive deep reinforcement learning (RL) framework for steering the cell individual offset (CIO) of every pair of cells. We consider two scenarios, Proof-of-Concept scenario and Realistic LTE Network Scenario.
+
+2- "Optimized Power and Cell Individual Offset for Cellular Load Balancing via Reinforcement Learning":
+In this work, we propose a joint power levels and CIOs optimization using reinforcement learning (RL).
 
 
 # Installation
@@ -31,13 +35,13 @@ Ref. repo: https://github.com/Ghada-sy/Load-Management
 
 Note: that ns-3 installtion directory is called Path_to_NS3_Directory.
 
-1- Copy proactive_agent folder to Path_to_NS3_Directory/scratch/. Try not to use nested folders i.e. avoid: scratch/folder1/folder2/file.cc, instead use scratch/folder1/file.cc. 
+1- Copy POCS, RealSce and Power_CIO folders to Path_to_NS3_Directory/scratch/. Try not to use nested folders i.e. avoid: scratch/folder1/folder2/file.cc, instead use scratch/folder1/file.cc. 
 
 2- Replace the diectory Path_to_NS3_Directory/scr/lte with the directory inside the archived file in lte(1).zip (Rememebr to backup the original)
 
 3- Copy cell-individual-offset.h and cell-individual-offset.cc to Path_to_NS3_Directoy/src/lte/model/.
 
-4- Copy LTE_Attributes.txt, Real_model-attributes.txt, and New_agent.sh to Path_to_NS3_Directoy/.
+4- Copy LTE_Attributes.txt, Real_model-attributes.txt, script_LTE_POCS.sh, script_LTE_RealSce.sh and Power_CIO.sh to Path_to_NS3_Directoy/.
 
 5- Copy and replace lte-ue-rrc.cc with Path_to_NS3_Directoy/src/lte/model/lte-ue-rrc.cc (Rememebr to backup the original).
 
@@ -63,24 +67,88 @@ Notice that: If the ./waf command resulted in an error, remove the directory Pat
 - right-click to open the terminal and run the command:
      
 ```
-$ ./proactive_agent.sh
+$ ./script_LTE_POCS.sh
 ```
 For the first run, you may need to run
 ```
-$ chmod +x ./proactive_agent.sh
+$ chmod +x ./script_LTE_POCS.sh
 ```
 
 -To run one episode only run the following command instead:
 
 ```
-$ ./waf --run "scratch/New_agnet/New_agent --RunNum=$(($i))"
+$ ./waf --run "scratch/POCS/POCS --RunNum=$(($i))"
 ```
 
 - Open a new tab in the terminal. This tab is used to run the DDQN agent code. 
      
 ```
-$ cd scratch/proactive_agent
-$ python3 Aug_agent.py
+$ cd scratch/POCS
+$ python3 ddqn_agent.py
+```
+
+13- To run the realistic scenario. In the directory Path_to_NS3_Directoy:
+
+- right-click to open the terminal and run the command:
+     
+```
+$ ./script_LTE_RealSce.sh
+```
+
+- To run one episode only run the follosing command instead:
+     
+```
+$ ./waf --run "scratch/RealSce/RealSce --RunNum=$(($i))"
+```
+
+- Open a new tab in the terminal. This tab is used to run the TD3 agent code. 
+     
+```
+$ cd scratch/RealSce
+$ python3 Agent_TD3.py
+```
+
+14- To run the joint power and CIO optimization scenario.
+
+In the directory Path_to_NS3_Directoy:
+
+- right-click to open the terminal and run the command:
+     
+```
+$ ./Power_CIO.sh
+```
+
+- To run one episode only run the follosing command instead:
+     
+```
+$ ./waf --run "scratch/Power_CIO/Power_CIO"
+```
+
+- Open a new tab in the terminal. This tab is used to run the TD3 agent code. 
+     
+```
+$ cd scratch/Power_CIO
+$ python3 BL_TD3.py
 ```
 
 
+
+# References
+If you find this code useful for your research, please cite the following papers:
+```
+@article{Alsuhli2020Mobility,
+  title={Mobility Load Management in Cellular Networks: A Deep Reinforcement Learning Approach},
+  author={Alsuhli, Ghada and Banawan, Karim and Attiah, Kareem and Elezabi, Ayman and Seddik, Karim and Gaber, Ayman and Zaki, Mohamed and Gadallah, Yasser},
+  journal={arXiv preprint XXXXXXXX},
+  year={2020}
+}
+
+@inproceedings{alsuhli2021optimized,
+  title={Optimized power and cell individual offset for cellular load balancing via reinforcement learning},
+  author={Alsuhli, Ghada and Banawan, Karim and Seddik, Karim and Elezabi, Ayman},
+  booktitle={2021 IEEE Wireless Communications and Networking Conference (WCNC)},
+  pages={1--7},
+  year={2021},
+  organization={IEEE}
+}
+```
